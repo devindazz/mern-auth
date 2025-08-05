@@ -1,4 +1,5 @@
 import { Container,Card, Button } from "react-bootstrap";
+import { LinkContainer } from "react-router-bootstrap";
 
 const Hero = () => {
   return (
@@ -11,8 +12,12 @@ const Hero = () => {
                         This is a simple authentication system built with the MERN stack.
                     </Card.Text>
                     <div className="d-flex justify-content-around">
-                        <Button className="mt-2" variant="primary" href="/login">Sign in</Button>
-                        <Button className="mt-2" variant="primary" href="/register">Sign up</Button>
+                        <LinkContainer to="/login">
+                        <Button className="mt-2" variant="primary">Sign in</Button>
+                        </LinkContainer>
+                        <LinkContainer to="/register">
+                        <Button className="mt-2" variant="primary">Sign up</Button>
+                        </LinkContainer>
                     </div>    
                 </Card.Body>
             </Card>
