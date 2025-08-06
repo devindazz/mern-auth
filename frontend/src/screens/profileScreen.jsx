@@ -6,8 +6,10 @@ import { useDispatch, useSelector } from "react-redux";
 import {toast} from "react-toastify";
 import { useRegisterMutation } from "../slices/usersApiSlice";
 import { setCredentials } from "../slices/authSlice";
-import Loader from "../components/loader";
 import { set } from "mongoose";
+import { useUpdateUserMutation } from "../slices/usersApiSlice";
+import Loader from "../components/loader";
+
 
 const ProfileScreen = () => {
   const [name, setName] = useState("");
@@ -19,6 +21,8 @@ const ProfileScreen = () => {
   const dispatch = useDispatch();
 
   const {userInfo} = useSelector((state) => state.auth);
+
+  const [updateProfile, { isLoading, error }] = useUpdateUserMutation();
 
   useEffect(() => {
     setName(userInfo.name);
@@ -32,7 +36,14 @@ const ProfileScreen = () => {
       toast.error("Passwords do not match");
       return;
     } else {
-      console.log("Profile updated with: ", { name, email, password });
+      try {
+        const res = await updateProfile({ name, email, password }).unwrap();
+        dispatch(setCredentials({...res}));
+        toast.success("Profile updated successfully");
+        navigate("/");
+      } catch (err) {
+        toast.error("Failed to update profile: " + err.message);
+      }
       
     }
   };
@@ -82,11 +93,12 @@ const ProfileScreen = () => {
           />
         </Form.Group>
 
-        
         {isLoading && <Loader />}
+        {error && toast.error("Failed to update profile: " + error.message)}
+
 
         <Button type="submit" variant="primary" className="mt-3">
-          Sign up
+          Update
         </Button>
 
         <Row className="py-3">
